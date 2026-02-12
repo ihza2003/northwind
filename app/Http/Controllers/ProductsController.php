@@ -71,7 +71,7 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
-        $product = Product::with(['categories', 'suppliers'])
+        $product = Product::with(['categorie', 'suppliers'])
             ->withSum('orderDetails as total terjual', 'quantity')
             ->find($id);
 
