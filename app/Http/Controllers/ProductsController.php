@@ -17,20 +17,16 @@ class ProductsController extends Controller
         // Menggunakan singular 'category' dan 'supplier' (asumsi nama relasi di Model)
         $query = Product::with(['categories', 'suppliers']);
 
-        // Filter by category & supplier
         $query->when($request->category_id, fn($q) => $q->where('category_id', $request->category_id))
             ->when($request->supplier_id, fn($q) => $q->where('supplier_id', $request->supplier_id));
 
-        // Filter by Price
         $query->when($request->min_price, fn($q) => $q->where('unit_price', '>=', $request->min_price))
             ->when($request->max_price, fn($q) => $q->where('unit_price', '<=', $request->max_price));
 
-        // Search
         if ($request->filled('search')) {
             $query->whereRaw('LOWER(product_name) LIKE ?', ['%' . strtolower($request->search) . '%']);
         }
 
-        // Sorting
         $sort = $request->get('sort', 'product_name:asc');
         $parts = explode(':', $sort);
         $sortBy = $parts[0] ?? 'product_name';
@@ -75,7 +71,6 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
-        // Menghitung total terjual dari relasi orderDetails
         $product = Product::with(['categories', 'suppliers'])
             ->withSum('orderDetails as total terjual', 'quantity')
             ->find($id);
