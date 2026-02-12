@@ -77,12 +77,8 @@ class ProductsController extends Controller
     {
         // Menghitung total terjual dari relasi orderDetails
         $product = Product::with(['categories', 'suppliers'])
-            ->withSum('orderDetails as total_terjual', 'quantity')
+            ->withSum('orderDetails as total terjual', 'quantity')
             ->find($id);
-
-        if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
-        }
 
         return response()->json([
             'status' => 200,
