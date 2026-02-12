@@ -87,37 +87,4 @@ class ProductsController extends Controller
             ]
         ]);
     }
-
-    /**
-     * Endpoint 3: POST /api/products
-     */
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'product_name'   => 'required|min:3',
-            'supplier_id'    => 'required|exists:suppliers,supplier_id',
-            'category_id'    => 'required|exists:categories,category_id',
-            'unit_price'     => 'required|numeric|gt:0',
-            'units_in_stock' => 'nullable|integer|min:0',
-            'discontinued'   => 'nullable|boolean'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $product = Product::create([
-            'product_name'   => $request->product_name,
-            'supplier_id'    => $request->supplier_id,
-            'category_id'    => $request->category_id,
-            'unit_price'     => $request->unit_price,
-            'units_in_stock' => $request->get('units_in_stock', 0),
-            'discontinued'   => $request->get('discontinued', false) ? 1 : 0,
-        ]);
-
-        return response()->json([
-            'message' => 'Product created successfully',
-            'data'    => $product
-        ], 201);
-    }
 }
